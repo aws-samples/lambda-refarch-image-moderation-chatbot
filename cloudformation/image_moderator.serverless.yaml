@@ -1,0 +1,118 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+
+Parameters:
+  VerificationToken:
+    Description: Verification token from Slack app settings
+    Type: String
+    NoEcho: true
+    
+  AccessToken:
+    Description: OAuth access token from Slack app settings
+    Type: String
+    NoEcho: true
+
+Resources:
+  ImageModeratorAPI:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: Prod
+      DefinitionBody:
+        swagger: "2.0"
+        info:
+          version: "2017-06-11T02:20:25Z"
+          title: !Ref AWS::StackName
+        basePath: "/Prod"
+        schemes:
+        - "https"
+        paths:
+          /:
+            post:
+              produces:
+              - "application/json"
+              responses:
+                "200":
+                  description: "200 response"
+                  schema:
+                    $ref: "#/definitions/Empty"
+              x-amazon-apigateway-integration:
+                responses:
+                  default:
+                    statusCode: "200"
+                uri: !Sub |-
+                  arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${ImageModeratorFunction.Arn}/invocations
+                passthroughBehavior: "when_no_match"
+                httpMethod: "POST"
+                contentHandling: "CONVERT_TO_TEXT"
+                type: "aws"
+        definitions:
+          Empty:
+            type: "object"
+            title: "Empty Schema"
+
+
+  ImageModeratorFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Description: Inspects Slack message.channels events for images with explicit content and removes the offending images if found
+      Handler: moderate_image.lambda_handler
+      Runtime: python3.6
+      CodeUri: ../lambda_functions/
+      Role: !GetAtt LambdaRekognitionRole.Arn
+      Environment:
+        Variables:
+          VERIFICATION_TOKEN: !Ref VerificationToken
+          ACCESS_TOKEN: !Ref AccessToken
+          MIN_CONFIDENCE: 80
+      Events:
+        ImageModeratorAPIPost:
+          Type: Api
+          Properties:
+            Path: /
+            Method: post
+            RestApiId: !Ref ImageModeratorAPI
+
+  LambdaRekognitionRole:
+    Type: "AWS::IAM::Role"
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          -
+            Sid: "AllowLambdaServiceToAssumeRole"
+            Effect: "Allow"
+            Action:
+              - "sts:AssumeRole"
+            Principal:
+              Service:
+                - "lambda.amazonaws.com"
+      Path: "/"
+      Policies:
+        -
+          PolicyName: "RekognitionDetectModerationLabels"
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              -
+                Effect: "Allow"
+                Action:
+                  - "rekognition:DetectModerationLabels"
+                Resource: "*"
+        -
+          PolicyName: "WriteToCWLogs"
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              -
+                Effect: "Allow"
+                Action:
+                  - "logs:CreateLogStream"
+                  - "logs:CreateLogGroup"
+                  - "logs:PutLogEvents"
+                Resource: "*"
+
+Outputs:
+  RequestURL:
+    Description: Prod URL for API to use as Request URL for Slack app
+    Value: !Sub |-
+       https://${ImageModeratorAPI}.execute-api.${AWS::Region}.amazonaws.com/Prod/

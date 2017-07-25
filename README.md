@@ -1,0 +1,113 @@
+# Amazon Rekognition Image Moderation Serverless Chat Bot
+
+Large community [Slack](https://slack.com/) teams can struggle to protect their public channels from trolls posting explicit or suggestive images. The Amazon Rekognition Image Moderator Serverless Chat Bot example solves this problem by using [Amazon Rekognition](https://aws.amazon.com/rekognition/)'s [Image Moderation](https://aws.amazon.com/rekognition/faqs/#image-moderation) deep learning feature to check images contained in messages posted to your team's public Slack channels for explicit or suggestive content. Images found to contain explicit or suggestive content are automatically removed by the bot and a message explaining the removal is posted by the bot to the originating public channel.
+
+This repository contains sample code for all the [AWS Lambda](https://aws.amazon.com/lambda/) functions depicted in the diagram below as well as an [AWS CloudFormation](https://aws.amazon.com/cloudformation/) template for creating the functions and related resources.
+
+![screenshot for instruction](images/Architecture.png)
+
+
+## Walkthrough of the Architecture
+1. Message containing image posted to public Slack channel for your team
+1. Slack event containing message posted to [Amazon API Gateway](https://aws.amazon.com/api-gateway/) API endpoint for bot
+1. Event validated and image contained in message downloaded to AWS Lambda function
+1. Image checked for suggestive or explicit content using Amazon Rekognition's Image Moderation deep learning feature
+1. Image containing explicit or suggestive content deleted and message detailing deletion posted by bot to originating channel
+
+
+## Running the Example
+### Preparing Slack
+First make sure you're logged in to Slack, then follow these instructions to prep your bot:
+1. [Create an app](https://api.slack.com/apps?new_app=1) ([Documentation](https://api.slack.com/slack-apps#creating_apps))
+1. From the `Basic Information` tab under `Settings` take note of the `Verification Token` as it will be required later
+1. Navigate to the `OAuth & Permissions` tab under `Features`
+1. Under the `Permissions Scopes` section add the following permission scopes
+    * channels:history
+    * chat:write:bot
+    * files:read
+    * files:write:user
+1. Click `Save Changes`
+1. Click `Install App to Team` then `Authorize` then note the `OAuth Access Token` as it will be required later
+
+### Launching the Bot Backend on AWS
+#### Option 1: Launch the CloudFormation Template in US West - Oregon (us-west-2)
+The backend infrastructure can be deployed in US West - Oregon (us-west-2) using the provided CloudFormation template.
+Click **Launch Stack** to launch the template in the US West - Oregon (us-west-2) region in your account:
+
+[![Launch Stack into Oregon with CloudFormation](http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/images/cloudformation-launch-stack-button.png)](https://console.aws.amazon.com/cloudformation/home?region=us-west-2#/stacks/new?stackName=ImageModeratorChatApp&templateURL=https://s3.amazonaws.com/rekognition-image-moderation-chat-app/image_moderator.output.yaml)
+
+(On the last page of the wizard, make sure to:
+
+1. Click the checkboxes to give AWS CloudFormation permission to **"create IAM resources"** and **"create IAM resources with custom names"**
+1. Follow the instructions to **"Create Change Set"** 
+1. Click **"Execute"**
+)
+
+#### Option 2: Launch the CloudFormation Template Manually 
+If you would like to deploy the template manually, you need a S3 bucket in the target region, and then package the Lambda functions into that S3 bucket by using the `aws cloudformation package` utility.
+
+Set environment variables for later commands to use:
+
+```bash
+S3BUCKET=[REPLACE_WITH_YOUR_BUCKET]
+REGION=[REPLACE_WITH_YOUR_REGION]
+STACKNAME=[REPLACE_WITH_DESIRED_NAME]
+VTOKEN=[REPLACE_WITH_VERIFICATION_TOKEN]
+ATOKEN=[REPLACE_WITH_OAUTH_ACCESS_TOKEN]
+```
+
+Then go to the `cloudformation` folder and use the `aws cloudformation package` utility
+
+```bash
+cd cloudformation
+
+aws cloudformation package --region $REGION --s3-bucket $S3BUCKET --template image_moderator.serverless.yaml --output-template-file image_moderator.output.yaml
+```
+Last, deploy the stack with the resulting yaml (`image_moderator.output.yaml`) through the CloudFormation Console or command line:
+
+```bash
+aws cloudformation deploy --region $REGION --template-file image_moderator.output.yaml --stack-name $STACKNAME --capabilities CAPABILITY_NAMED_IAM --parameter-overrides VerificationToken=$VTOKEN AccessToken=$ATOKEN
+```
+
+### Finalize Slack Event Subscription
+1. Navigate to the created stack in the CloudFormation console and note the value for the `RequestURL` output from the created stack as it will be required later
+1. Return to the Slack app settings page for the Slack app created earlier
+1. Navigate to the `Event Subscriptions` tab under `Features` and enable events
+1. In the `Request URL` field enter the `RequestURL` value noted earlier
+1. Click `Add Team Event` and select `message.channels`
+1. Click `Save Changes`
+
+
+## Testing the Example
+To test the example open your Slack bot and attempt to upload the sample images from the Amazon Rekognition console demo, which can be downloaded from the links below:
+- [Family Picnic](https://dhei5unw3vrsx.cloudfront.net/images/family_picnic_resized.jpg) (will not be removed by bot)
+- [Yoga Swimwear](https://dhei5unw3vrsx.cloudfront.net/images/yoga_swimwear_resized.jpg) (will be removed by bot)
+
+
+## Cleaning Up the Stack Resources
+
+To remove all resources created by this example, do the following:
+
+1. Delete the CloudFormation stack.
+1. Delete the CloudWatch log groups associated with each Lambda function created by the CloudFormation stack.
+
+## CloudFormation Template Resources
+The following sections explain all of the resources created by the CloudFormation template provided with this example.
+
+### AWS Lambda
+- **ImageModeratorFunction** - Lambda function that validates incoming Slack event messages, checks them for images containing explicit content, and orchestrates the removal of images found to contain explicit content from Slack.
+- **ImageModeratorFunctionImageModeratorAPIPostPermissionTest** - Implicitly created Lambda permission, allows API Gateway Test stage to call Lambda function.
+- **ImageModeratorFunctionImageModeratorAPIPostPermissionProd** - Implicitly created Lambda permission, allows API Gateway Prod stage to call Lambda function.
+
+### AWS IAM
+- **LambdaRekognitionRole** - IAM Role with policy that allows Lambda function to invoke "rekognition:DetectModerationLabels" API call and write log messages to CloudWatch Logs.
+
+### Amazon API Gateway
+- **ImageModeratorAPI:** - API for image moderation chat bot
+- **ImageModeratorAPIProdStage** - Implicitly created production stage for API
+- **ImageModeratorAPIDeploymentXXXXXXXXX** - Implicitly created deployment for production stage of API
+
+
+## License
+
+This reference architecture sample is licensed under Apache 2.0.
