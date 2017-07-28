@@ -1,18 +1,23 @@
-# Amazon Rekognition Image Moderation Serverless Chat Bot
+# Serverless Reference Architecture: Image Moderation Chat Bot
 
-Large community [Slack](https://slack.com/) teams can struggle to protect their public channels from trolls posting explicit or suggestive images. The Amazon Rekognition Image Moderator Serverless Chat Bot example solves this problem by using [Amazon Rekognition](https://aws.amazon.com/rekognition/)'s [Image Moderation](https://aws.amazon.com/rekognition/faqs/#image-moderation) deep learning feature to check images contained in messages posted to your team's public Slack channels for explicit or suggestive content. Images found to contain explicit or suggestive content are automatically removed by the bot and a message explaining the removal is posted by the bot to the originating public channel.
+Administrators of large channels in popular chat apps like Slack can struggle to protect their users from trolls posting explicit or suggestive images. The Image Moderator Chat Bot Serverless reference architecture solves this problem by using [Amazon API Gateway](https://aws.amazon.com/api-gateway/), [AWS Lambda](https://aws.amazon.com/lambda/), and [Amazon Rekognition](https://aws.amazon.com/rekognition/)'s [Image Moderation](https://aws.amazon.com/rekognition/faqs/#image-moderation) deep learning feature to check images contained in messages posted to channels for explicit or suggestive content. Images found to contain explicit or suggestive content are automatically removed by the bot and a message explaining the removal is posted by the bot to the originating channel.
 
-This repository contains sample code for all the [AWS Lambda](https://aws.amazon.com/lambda/) functions depicted in the diagram below as well as an [AWS CloudFormation](https://aws.amazon.com/cloudformation/) template for creating the functions and related resources.
+This example is intended to work with [Slack](https://slack.com/), but could also be modified to work with other popular chat apps such as [Facebook Messenger](https://www.messenger.com/).
+
+This repository contains sample code for all the Lambda functions depicted in the diagram below as well as an [AWS CloudFormation](https://aws.amazon.com/cloudformation/) template for creating the functions and related resources.
+
+If you'd like to see some of the other powerful features of Amazon Rekognition check out the [Image Recognition and Processing Backend Serverless reference architecture](https://github.com/awslabs/lambda-refarch-imagerecognition)
 
 ![screenshot for instruction](images/Architecture.png)
 
 
 ## Walkthrough of the Architecture
-1. Message containing image posted to public Slack channel for your team
-1. Slack event containing message posted to [Amazon API Gateway](https://aws.amazon.com/api-gateway/) API endpoint for bot
+1. User posts message containing image to channel of chat app
+1. Chat app posts event containing message to Amazon API Gateway API endpoint for bot
 1. Event validated and image contained in message downloaded to AWS Lambda function
 1. Image checked for suggestive or explicit content using Amazon Rekognition's Image Moderation deep learning feature
-1. Image containing explicit or suggestive content deleted and message detailing deletion posted by bot to originating channel
+1. Image containing explicit or suggestive content deleted from originating channel using API for chat app
+1. Message detailing deletion posted by bot to originating channel using API for chat app
 
 
 ## Running the Example
