@@ -6,7 +6,7 @@ This example is intended to work with [Slack](https://slack.com/), but could als
 
 This repository contains sample code for all the Lambda functions depicted in the diagram below as well as an [AWS CloudFormation](https://aws.amazon.com/cloudformation/) template for creating the functions and related resources.
 
-If you'd like to see some of the other powerful features of Amazon Rekognition check out the [Image Recognition and Processing Backend Serverless reference architecture](https://github.com/awslabs/lambda-refarch-imagerecognition)
+To see some of the other powerful features of Amazon Rekognition in action check out the [Image Recognition and Processing Backend Serverless reference architecture](https://github.com/awslabs/lambda-refarch-imagerecognition)
 
 ![screenshot for instruction](images/Architecture.png)
 
