@@ -1,6 +1,6 @@
 # Serverless Reference Architecture: Image Moderation Chat Bot
 
-Administrators of large channels in popular chat apps like Slack can struggle to protect their users from trolls posting explicit or suggestive images. The Image Moderator Chat Bot Serverless reference architecture solves this problem by using [Amazon API Gateway](https://aws.amazon.com/api-gateway/), [AWS Lambda](https://aws.amazon.com/lambda/), and [Amazon Rekognition](https://aws.amazon.com/rekognition/)'s [Image Moderation](https://aws.amazon.com/rekognition/faqs/#image-moderation) deep learning feature to check images contained in messages posted to channels for explicit or suggestive content. Images found to contain explicit or suggestive content are automatically removed by the bot and a message explaining the removal is posted by the bot to the originating channel.
+Administrators of large channels in popular chat apps like Slack can struggle to protect their users from trolls posting explicit or suggestive images. The Image Moderator Chat Bot Serverless reference architecture solves this problem by using [Amazon API Gateway](https://aws.amazon.com/api-gateway/), [AWS Lambda](https://aws.amazon.com/lambda/), and [Amazon Rekognition](https://aws.amazon.com/rekognition/)'s [Image Moderation](https://aws.amazon.com/rekognition/faqs/#image-moderation) deep learning feature to check images contained in messages posted to channels for explicit or suggestive content. Image Moderation provides a hierarchical list of labels for each image with confidence scores to enable fine-grained control over what images to allow. Images found to contain explicit or suggestive content labels above a minimum confidence interval are automatically removed by the bot, and a message explaining the removal is posted by the bot to the originating channel.
 
 This example is intended to work with [Slack](https://slack.com/), but could also be modified to work with other popular chat apps such as [Facebook Messenger](https://www.messenger.com/).
 
@@ -12,8 +12,8 @@ If you'd like to see some of the other powerful features of Amazon Rekognition c
 
 
 ## Walkthrough of the Architecture
-1. User posts message containing image to channel of chat app
-1. Chat app posts event containing message to Amazon API Gateway API endpoint for bot
+1. User posts message containing image to channel of chat app monitored by chat bot
+1. Chat app posts event containing user's message to Amazon API Gateway API endpoint for chat bot
 1. Event validated and image contained in message downloaded to AWS Lambda function
 1. Image checked for suggestive or explicit content using Amazon Rekognition's Image Moderation deep learning feature
 1. Image containing explicit or suggestive content deleted from originating channel using API for chat app
