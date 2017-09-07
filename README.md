@@ -12,12 +12,12 @@ To see some of the other powerful features of Amazon Rekognition in action check
 
 
 ## Walkthrough of the Architecture
-1. User posts message containing image to channel of chat app monitored by chat bot
-1. Chat app posts event containing user's message to Amazon API Gateway API endpoint for chat bot
-1. Event validated and image contained in message downloaded to AWS Lambda function
-1. Image checked for suggestive or explicit content using Amazon Rekognition's Image Moderation deep learning feature
-1. Image containing explicit or suggestive content deleted from originating channel using API for chat app
-1. Message detailing deletion posted by bot to originating channel using API for chat app
+1. A user posts a message containing an image to a chat app channel that’s monitored by a chatbot.
+1. The chat app posts the event to an Amazon API Gateway API for the chatbot.
+1. The chatbot validates the event. This event triggers an AWS Lambda function that downloads the image.
+1. Amazon Rekognition’s image recognition feature checks the image for suggestive or explicit content.
+1. The chat app API deletes an image containing explicit or suggestive content from the chat channel.
+1. The chatbot uses the chat app API to post a message to the chat channel detailing deletion of the image.
 
 
 ## Running the Example
