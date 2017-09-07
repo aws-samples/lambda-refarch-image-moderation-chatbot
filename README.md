@@ -88,6 +88,7 @@ To test the example open your Slack bot and attempt to upload the sample images 
 - [Family Picnic](https://dhei5unw3vrsx.cloudfront.net/images/family_picnic_resized.jpg) (will not be removed by bot)
 - [Yoga Swimwear](https://dhei5unw3vrsx.cloudfront.net/images/yoga_swimwear_resized.jpg) (will be removed by bot)
 
+![testing of example gif](https://s3-us-west-2.amazonaws.com/rekognition-image-moderation-chat-app/TestingExample.gif)
 
 ## Cleaning Up the Stack Resources
 
