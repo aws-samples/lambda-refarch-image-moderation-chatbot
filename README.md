@@ -1,6 +1,6 @@
-# Serverless Reference Architecture: Image Moderation Chat Bot
+# Serverless Reference Architecture: Image Moderation Chatbot
 
-Administrators of large channels in popular chat apps can struggle to protect their users from trolls posting explicit or suggestive images. The Image Moderator Chat Bot [Serverless](https://aws.amazon.com/serverless/#getstarted) reference architecture solves this problem by using [Amazon API Gateway](https://aws.amazon.com/api-gateway/), [AWS Lambda](https://aws.amazon.com/lambda/), and [Amazon Rekognition](https://aws.amazon.com/rekognition/)'s [Image Moderation](https://aws.amazon.com/rekognition/faqs/#image-moderation) deep learning feature to check images contained in messages posted to channels for explicit or suggestive content. Image Moderation provides a hierarchical list of labels for each image with confidence scores to enable fine-grained control over what images to allow. Images found to contain explicit or suggestive content labels above a minimum confidence interval are automatically removed by the bot, and a message explaining the removal is posted by the bot to the originating channel.
+Administrators of large channels in popular chat apps can struggle to protect their users from trolls posting explicit or suggestive images. The Image Moderation Chatbot [Serverless](https://aws.amazon.com/serverless/#getstarted) reference architecture solves this problem by using [Amazon API Gateway](https://aws.amazon.com/api-gateway/), [AWS Lambda](https://aws.amazon.com/lambda/), and [Amazon Rekognition](https://aws.amazon.com/rekognition/)'s [Image Moderation](https://aws.amazon.com/rekognition/faqs/#image-moderation) deep learning feature to check images contained in messages posted to channels for explicit or suggestive content. Image Moderation provides a hierarchical list of labels for each image with confidence scores to enable fine-grained control over what images to allow. Images found to contain explicit or suggestive content labels above a minimum confidence interval are automatically removed by the bot, and a message explaining the removal is posted by the bot to the originating channel.
 
 This example is intended to work with [Slack](https://slack.com/), but could also be modified to work with other popular chat apps such as [Facebook Messenger](https://www.messenger.com/).
 
@@ -39,7 +39,7 @@ First make sure you're logged in to Slack, then follow these instructions to pre
 The backend infrastructure can be deployed in US West - Oregon (us-west-2) using the provided CloudFormation template.
 Click **Launch Stack** to launch the template in the US West - Oregon (us-west-2) region in your account:
 
-[![Launch Stack into Oregon with CloudFormation](http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/images/cloudformation-launch-stack-button.png)](https://console.aws.amazon.com/cloudformation/home?region=us-west-2#/stacks/new?stackName=ImageModeratorChatApp&templateURL=https://s3.amazonaws.com/rekognition-image-moderation-chat-app/image_moderator.output.yaml)
+[![Launch Stack into Oregon with CloudFormation](http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/images/cloudformation-launch-stack-button.png)](https://console.aws.amazon.com/cloudformation/home?region=us-west-2#/stacks/new?stackName=ImageModerationChatbot&templateURL=https://s3.amazonaws.com/rekognition-image-moderation-chat-app/image_moderator.output.yaml)
 
 (On the last page of the wizard, make sure to:
 
@@ -108,7 +108,7 @@ The following sections explain all of the resources created by the CloudFormatio
 - **LambdaRekognitionRole** - IAM Role with policy that allows Lambda function to invoke "rekognition:DetectModerationLabels" API call and write log messages to CloudWatch Logs.
 
 ### Amazon API Gateway
-- **ImageModeratorAPI:** - API for image moderation chat bot
+- **ImageModeratorAPI:** - API for image moderation chatbot
 - **ImageModeratorAPIProdStage** - Implicitly created production stage for API
 - **ImageModeratorAPIDeploymentXXXXXXXXX** - Implicitly created deployment for production stage of API
 
