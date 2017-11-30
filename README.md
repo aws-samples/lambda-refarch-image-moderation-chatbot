@@ -105,9 +105,6 @@ The following sections explain all of the resources created by the CloudFormatio
 - **ImageModeratorFunctionImageModeratorAPIPostPermissionTest** - Implicitly created Lambda permission, allows API Gateway Test stage to call Lambda function.
 - **ImageModeratorFunctionImageModeratorAPIPostPermissionProd** - Implicitly created Lambda permission, allows API Gateway Prod stage to call Lambda function.
 
-### AWS IAM
-- **LambdaRekognitionRole** - IAM Role with policy that allows Lambda function to invoke "rekognition:DetectModerationLabels" API call and write log messages to CloudWatch Logs.
-
 ### Amazon API Gateway
 - **ImageModeratorAPI:** - API for image moderation chatbot
 - **ImageModeratorAPIProdStage** - Implicitly created production stage for API
