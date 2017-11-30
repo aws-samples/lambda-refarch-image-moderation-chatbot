@@ -58,6 +58,7 @@ Resources:
       Handler: moderate_image.lambda_handler
       Runtime: python3.6
       CodeUri: ../lambda_functions/
+      Role: !GetAtt LambdaRekognitionRole.Arn
       Environment:
         Variables:
           VERIFICATION_TOKEN: !Ref VerificationToken
@@ -70,9 +71,45 @@ Resources:
             Path: /
             Method: post
             RestApiId: !Ref ImageModeratorAPI
+
+  LambdaRekognitionRole:
+    Type: "AWS::IAM::Role"
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          -
+            Sid: "AllowLambdaServiceToAssumeRole"
+            Effect: "Allow"
+            Action:
+              - "sts:AssumeRole"
+            Principal:
+              Service:
+                - "lambda.amazonaws.com"
+      Path: "/"
       Policies:
-        - RekognitionNoDataAccessPolicy:
-            CollectionId: None
+        -
+          PolicyName: "RekognitionDetectModerationLabels"
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              -
+                Effect: "Allow"
+                Action:
+                  - "rekognition:DetectModerationLabels"
+                Resource: "*"
+        -
+          PolicyName: "WriteToCWLogs"
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              -
+                Effect: "Allow"
+                Action:
+                  - "logs:CreateLogStream"
+                  - "logs:CreateLogGroup"
+                  - "logs:PutLogEvents"
+                Resource: "*"
 
 
 Outputs:
