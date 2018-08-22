@@ -35,18 +35,15 @@ First make sure you're logged in to Slack, then follow these instructions to pre
 1. Click `Install App to Team` then `Authorize` then note the `OAuth Access Token` as it will be required later
 
 ### Launching the Bot Backend on AWS
-#### Option 1: Launch the CloudFormation Template in US West - Oregon (us-west-2)
-The backend infrastructure can be deployed in US West - Oregon (us-west-2) using the provided CloudFormation template.
-Click **Launch Stack** to launch the template in the US West - Oregon (us-west-2) region in your account:
 
-[![Launch Stack into Oregon with CloudFormation](http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/images/cloudformation-launch-stack-button.png)](https://console.aws.amazon.com/cloudformation/home?region=us-west-2#/stacks/new?stackName=ImageModerationChatbot&templateURL=https://s3.amazonaws.com/rekognition-image-moderation-chat-app/image_moderator.output.yaml)
+#### Option 1: Launch from Serverless Application Repository - Any Supported Region
+This bot can be launched into any region that supports the underlying services from the [Serverless Application Repository](https://aws.amazon.com/serverless/serverlessrepo/) using the instructions below:
 
-(On the last page of the wizard, make sure to:
-
-1. Click the checkboxes to give AWS CloudFormation permission to **"create IAM resources"** and **"create IAM resources with custom names"**
-1. Follow the instructions to **"Create Change Set"** 
-1. Click **"Execute"**
-)
+1. Navigate to the [application details page](https://serverlessrepo.aws.amazon.com/applications/arn:aws:serverlessrepo:us-east-1:426111819794:applications~image-moderation-chatbot) for the chatbot.
+1. Click `Deploy`
+1. From the region dropdown in the top right ensure you have the desired region to deploy into selected
+1. Input the appropriate application parameters under `Configure application parameters`
+1. Scroll to the bottom of the page and click `Deploy` to deploy the chatbot
 
 #### Option 2: Launch the CloudFormation Template Manually 
 If you would like to deploy the template manually, you need a S3 bucket in the target region, and then package the Lambda functions into that S3 bucket by using the `aws cloudformation package` utility.
