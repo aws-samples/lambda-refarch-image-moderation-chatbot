@@ -27,7 +27,7 @@ def lambda_handler(event, context):
         return
 
     event_details = event['event']
-    file_details = event_details['file']
+    file_details = event_details['files'][0]
 
     channel = event_details['channel']
     url = file_details['url_private']
@@ -80,7 +80,7 @@ def validate_event(event):
         print('Not a file_shared event- ignoring event...')
         return False
 
-    file_details = event_details['file']
+    file_details = event_details['files'][0]
     mime_type = file_details['mimetype']
     file_size = file_details['size']
 
