@@ -79,7 +79,7 @@ aws cloudformation deploy --region $REGION --template-file image_moderator.outpu
 1. Return to the Slack app settings page for the Slack app created earlier
 1. Navigate to the `Event Subscriptions` tab under `Features` and enable events
 1. In the `Request URL` field enter the `RequestURL` value noted earlier
-1. Click `Add Team Event` and select `message.channels`
+1. Click `Add Workspace Event` and select `message.channels`
 1. Click `Save Changes`
 
 
