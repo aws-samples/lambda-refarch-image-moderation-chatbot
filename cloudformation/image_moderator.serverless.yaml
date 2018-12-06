@@ -58,6 +58,7 @@ Resources:
       Handler: moderate_image.lambda_handler
       Runtime: python3.6
       CodeUri: ../lambda_functions/
+      Timeout: 10
       Environment:
         Variables:
           VERIFICATION_TOKEN: !Ref VerificationToken
